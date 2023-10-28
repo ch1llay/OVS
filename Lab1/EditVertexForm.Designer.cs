@@ -1,5 +1,5 @@
 ﻿
-namespace LabOVS1
+namespace Lab1
 {
     partial class EditVertexForm
     {

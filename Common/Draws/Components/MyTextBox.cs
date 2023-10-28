@@ -1,8 +1,8 @@
 ﻿using System.Windows.Forms;
 
-namespace LabOVS1
+namespace Common.Draws.Components
 {
-    internal class MyTextBox : TextBox
+    public class MyTextBox : TextBox
     {
         public int From;
         public int To;

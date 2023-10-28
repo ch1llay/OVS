@@ -1,4 +1,4 @@
-﻿namespace LabOVS1
+﻿namespace Common.Draws
 {
     public class Package
     {

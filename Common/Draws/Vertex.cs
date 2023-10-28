@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace LabOVS1
+namespace Common.Draws
 {
     public class Vertex
     {
@@ -69,7 +69,7 @@ namespace LabOVS1
         {
             var rect = new Rectangle(Location, new Size(Radius * 2, Radius * 2));
             graphics.DrawEllipse(_currentPen, rect);
-            graphics.DrawString(Index.ToString(), Config.DefaultFont, Config.DefaultBrush, rect, Config.TextFormat);
+            graphics.DrawString(Index.ToString(), Config.VertexFont, Config.VertexTextBrush, rect, Config.TextFormat);
         }
 
         public override string ToString()

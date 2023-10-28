@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace LabOVS1
+namespace Common.Draws
 {
     public class Edge
     {
@@ -18,13 +18,13 @@ namespace LabOVS1
         public int Value;
         public Color Color;
 
-        public Edge(Vertex from, Vertex to, int value, Color color)
+        public Edge(Vertex from, Vertex to, int value, Pen pen)
         {
             Init();
             From = from;
             To = to;
             Value = value;
-            Color = color;
+            CurrentPen = pen;
         }
 
         public Edge(Vertex from, Vertex to, int value, bool isDirected)
@@ -38,7 +38,6 @@ namespace LabOVS1
 
         private void Init()
         {
-            CurrentPen = Config.EdgePen;
             _textBrush = Config.DefaultBrush;
             IsDirected = true;
             _rnd = new Random();
@@ -49,22 +48,24 @@ namespace LabOVS1
         {
             //CurrentPen.Dispose();
             Color = color;
-            CurrentPen = new Pen(color, 10);
+            CurrentPen = new Pen(color, Config.HighlightingEdgePenSize);
             _textBrush = new SolidBrush(color);
+            
         }
         
-        public void ChangeColor(Color color)
+        public void ChangeColor(Pen pen)
         {
             //CurrentPen.Dispose();
-            CurrentPen = new Pen(color, 3);
-            _textBrush = new SolidBrush(color);
+            CurrentPen = pen;
+            _textBrush = new SolidBrush(pen.Color);
         }
 
         public void ResetColor()
         {
             //CurrentPen.Dispose();
             Color = Tools.GetRandomColor(0);
-            CurrentPen = Config.EdgePen;
+            CurrentPen.Width = Config.DefaultEdgePenSize;
+            CurrentPen = new Pen(Color, Config.DefaultEdgePenSize);
             _textBrush = Config.DefaultBrush;
         }
 
@@ -75,9 +76,9 @@ namespace LabOVS1
             var dy = to.Y - from.Y;
 
             // increase this to get a larger arrow head
-            const int arrowHeadBoxSize = 10;
+            const int arrowHeadBoxSize = 8;
             
-            // normalize
+            // normalizeищ
             var length = Math.Sqrt(dx * dx + dy * dy);
             var unitDx = dx / length;
             var unitDy = dy / length;
@@ -94,9 +95,11 @@ namespace LabOVS1
                     Convert.ToInt32(to.X - unitDx * arrowHeadBoxSize + unitDy * arrowHeadBoxSize),
                     Convert.ToInt32(to.Y - unitDy * arrowHeadBoxSize - unitDx * arrowHeadBoxSize));
 
+                var oldWidth = CurrentPen.Width;
                 CurrentPen.Width = 2;
                 graphics.DrawLine(CurrentPen, to, arrowPoint1);
                 graphics.DrawLine(CurrentPen, to, arrowPoint2);
+                CurrentPen.Width = oldWidth;
             }
             catch { }
         }
@@ -142,7 +145,7 @@ namespace LabOVS1
 
             //Point[] points = { from, new Point(mid1.X + 20, mid1.Y + 20), new Point(mid2.X + 20, mid2.Y + 20), to };
             Point[] points = {from, new Point(mid.X + _offset, mid.Y + _offset), new Point(mid.X + _offset, mid.Y + _offset), to};
-            ChangeColor(Color);
+            ChangeColor(CurrentPen);
             graphics.DrawLine(CurrentPen, from, to);
 
             //graphics.DrawBezier(CurrentPen, points[0], points[1], points[2], points[3]);

@@ -1,4 +1,4 @@
-﻿namespace LabOVS1.enums
+﻿namespace Common.Draws.enums
 {
     public enum Modes
     {
