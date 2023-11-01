@@ -526,6 +526,7 @@ public partial class MainForm : Form
         drawVertexButton.Enabled = true;
         drawEdgeButton.Enabled = true;
         deleteButton.Enabled = true;
+        findPathButton.Enabled = true;
         _drawService._currentMode = Modes.Select;
     }
 
@@ -535,6 +536,7 @@ public partial class MainForm : Form
         drawVertexButton.Enabled = false;
         drawEdgeButton.Enabled = true;
         deleteButton.Enabled = true;
+        findPathButton.Enabled = true;
         _drawService._currentMode = Modes.AddVertex;
     }
 
@@ -544,6 +546,7 @@ public partial class MainForm : Form
         drawVertexButton.Enabled = true;
         drawEdgeButton.Enabled = true;
         deleteButton.Enabled = false;
+        findPathButton.Enabled = true;
         _drawService._currentMode = Modes.Delete;
     }
 
@@ -553,6 +556,7 @@ public partial class MainForm : Form
         drawVertexButton.Enabled = true;
         drawEdgeButton.Enabled = false;
         deleteButton.Enabled = true;
+        findPathButton.Enabled = true;
         _drawService._currentMode = Modes.AddEdge;
     }
 

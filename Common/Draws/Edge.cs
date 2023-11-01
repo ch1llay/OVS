@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Common.Draws
 {
@@ -96,10 +97,16 @@ namespace Common.Draws
                     Convert.ToInt32(to.Y - unitDy * arrowHeadBoxSize - unitDx * arrowHeadBoxSize));
 
                 var oldWidth = CurrentPen.Width;
+                var oldColor = CurrentPen.Color;
+                CurrentPen.Width = 5;
+                graphics.DrawLine(CurrentPen, to, arrowPoint1);
+                graphics.DrawLine(CurrentPen, to, arrowPoint2);
                 CurrentPen.Width = 2;
+                CurrentPen.Color = Color.Black;
                 graphics.DrawLine(CurrentPen, to, arrowPoint1);
                 graphics.DrawLine(CurrentPen, to, arrowPoint2);
                 CurrentPen.Width = oldWidth;
+                CurrentPen.Color = oldColor;
             }
             catch { }
         }

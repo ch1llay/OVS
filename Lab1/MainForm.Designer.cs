@@ -51,7 +51,7 @@ namespace Lab1
             GraphView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             GraphView.Name = "GraphView";
             GraphView.Size = new System.Drawing.Size(1145, 611);
-            GraphView.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            GraphView.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             GraphView.TabIndex = 5;
             GraphView.TabStop = false;
             GraphView.Click += GraphView_Click;

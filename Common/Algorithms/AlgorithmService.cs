@@ -7,51 +7,50 @@ namespace Common.Algorithms;
 
 public class AlgorithmService
 {
-    private MatrixWrapClass _MatrixWrap;
-    public readonly List<List<Pair<int, int>>> _g;
-
+    private readonly MatrixWrapClass _matrixWrap;
+    private readonly List<List<Pair<int, int>>> _g;
 
     public AlgorithmService(MatrixWrapClass matrix, List<List<Pair<int, int>>> g)
     {
-        _MatrixWrap =  matrix;
+        _matrixWrap =  matrix;
         _g = g;
     }
 
     public List<int> Dijkstra(int s, int finish)
     {
-        var n = _MatrixWrap.Matrix.GetLength(0);   
+        var n = _matrixWrap.Matrix.GetLength(0);   
         var path = new List<int>(n);
         //Массив с длинами особо кратчайших путей
-        var d = new List<int>(n);
+        var dist = new List<int>(n);
         var was = new List<bool>(n);
 
         for (var i = 0; i < n; ++i)
         {
             path.Add(0);
-            d.Add(0);
+            dist.Add(0);
             was.Add(false);
         }
 
         for (var i = 0; i < n; ++i)
         {
-            d[i] = int.MaxValue;
+            dist[i] = int.MaxValue;
             was[i] = false;
             path[i] = 0;
         }
 
-        d[s] = 0;
+        dist[s] = 0;
 
         for (var i = 0; i < n; ++i)
         {
             var v = -1;
 
             for (var j = 0; j < n; ++j)
-                if (!was[j] && (v == -1 || d[j] < d[v]))
+                if (!was[j] && (v == -1 || dist[j] < dist[v]))
                 {
                     v = j;
                 }
 
-            if (d[v] == int.MaxValue)
+            if (dist[v] == int.MaxValue)
             {
                 break;
             }
@@ -63,15 +62,14 @@ public class AlgorithmService
                 var to = _g[v][j].To;
                 var len = _g[v][j].Value;
 
-                if (d[v] + len < d[to])
+                if (dist[v] + len < dist[to])
                 {
-                    d[to] = d[v] + len;
+                    dist[to] = dist[v] + len;
                     path[to] = v;
                 }
             }
         }
-
+        
         return path;
     }
-
 }

@@ -138,10 +138,10 @@ public class DrawService
         var vertex = new Vertex(location, value);
         VertexList.Add(vertex);
         _graphDrawService.AddVertex();
-        for (var i = 0; i < value; i++) CreateEdge(FindVertex(value), FindVertex(i));
-        DeleteEdgesFromTheVertex(vertex);
-        for (var i = 0; i < value; i++) CreateEdge(FindVertex(i), FindVertex(value));
-        DeleteEdgesToTheVertex(vertex);
+        //for (var i = 0; i < value; i++) CreateEdge(FindVertex(value), FindVertex(i));
+       // DeleteEdgesFromTheVertex(vertex);
+       //for (var i = 0; i < value; i++) CreateEdge(FindVertex(i), FindVertex(value));
+       //DeleteEdgesToTheVertex(vertex);
         UpdateMatrix();
 
         return vertex;
@@ -173,9 +173,9 @@ public class DrawService
 
     public Edge CreateEdge(Vertex from, Vertex to)
     {
-        var edge = new Edge(from, to, 1, new Pen(Tools.GetRandomColor(), Config.DefaultEdgePenSize));
+        var edge = new Edge(from, to, 0, new Pen(Tools.GetRandomColor(), Config.DefaultEdgePenSize));
         EdgeList.Add(edge);
-        _graphDrawService.AddEdge(from.Index, to.Index, 1);
+        _graphDrawService.AddEdge(from.Index, to.Index, 0);
 
         return edge;
     }
@@ -294,6 +294,12 @@ public class DrawService
         }
 
         edge.Value = value;
+        var edgeG = _graphDrawService.G[edge.From.Index].FirstOrDefault(e => e.To == edge.To.Index);
+
+        if (edgeG != null)
+        {
+            edgeG.Value = value;
+        }
     }
 
     public void EditVertex(Vertex vertex, Dictionary<Vertex, int> connected)

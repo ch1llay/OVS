@@ -62,6 +62,11 @@ public class GraphDrawService
 
     public void AddEdge(int vertex1, int vertex2, int value)
     {
+        if (value == 0)
+        {
+            return;
+        }
+        
         MatrixWrap.Matrix[vertex1, vertex2] = value;
         G[vertex1].Add(new Pair<int, int>(vertex2, value));
     }

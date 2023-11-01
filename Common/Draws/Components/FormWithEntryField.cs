@@ -67,6 +67,13 @@ namespace Common.Draws.Components
             isShowed = false;
         }
 
+        private void ActionInvoke()
+        {
+            _action.Invoke();
+            isShowed = true;
+            this.Close();
+            this.Dispose();
+        }
         private void InitializeComponent()
         {
             textBox = new TextBox
@@ -83,10 +90,17 @@ namespace Common.Draws.Components
 
             button.MouseClick += (sender, args) =>
             {
-                _action.Invoke();
-                isShowed = true;
-                this.Close();
-                this.Dispose();
+                ActionInvoke();
+            };
+            
+            
+
+            textBox.KeyUp += (object sender, System.Windows.Forms.KeyEventArgs e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    ActionInvoke();
+                }
             };
             this.Controls.Add(textBox);
             this.Controls.Add(button);
