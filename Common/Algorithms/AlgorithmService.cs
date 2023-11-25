@@ -26,7 +26,7 @@ public class AlgorithmService
 
         for (var i = 0; i < n; ++i)
         {
-            path.Add(0);
+            path.Add(-1);
             dist.Add(0);
             was.Add(false);
         }
@@ -35,7 +35,7 @@ public class AlgorithmService
         {
             dist[i] = int.MaxValue;
             was[i] = false;
-            path[i] = 0;
+            path[i] = -1;
         }
 
         dist[s] = 0;

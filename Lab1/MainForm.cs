@@ -54,7 +54,14 @@ public partial class MainForm : Form
         var v2 = i;
         var listOfV = new List<int>();
 
-        while (path[i] != from)
+        var noWay = false;
+        if (path[i] == -1)
+        {
+            MessageBox.Show("Пути от " + from + " до " + to + " не существует.");
+            noWay = true;
+        }
+
+        while (!noWay && path[i] != from)
         {
             v1 = path[i];
             v2 = i;
@@ -86,7 +93,6 @@ public partial class MainForm : Form
 
         var richTextBoxInfoText = string.Empty;
         richTextBoxInfoText += "Путь ";
-        var noWay = false;
 
         for (var k = 0; k < listOfV.Count - 1; ++k)
         {
@@ -94,7 +100,7 @@ public partial class MainForm : Form
 
             if (_drawService.FindEdge(v, listOfV[k + 1]) == null)
             {
-                MessageBox.Show("Пути от " + from + " до " + to + " не существует.");
+                //MessageBox.Show("Пути от " + from + " до " + to + " не существует.");
                 noWay = true;
             }
             else
