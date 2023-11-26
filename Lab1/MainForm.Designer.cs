@@ -41,16 +41,19 @@ namespace Lab1
             drawEdgeButton = new System.Windows.Forms.Button();
             deleteAllButton = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
+            checkBox1 = new System.Windows.Forms.CheckBox();
+            numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)GraphView).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
             // 
             // GraphView
             // 
             GraphView.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            GraphView.Location = new System.Drawing.Point(276, 51);
-            GraphView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            GraphView.Location = new System.Drawing.Point(315, 68);
             GraphView.Name = "GraphView";
-            GraphView.Size = new System.Drawing.Size(1145, 611);
+            GraphView.Size = new System.Drawing.Size(1309, 815);
             GraphView.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             GraphView.TabIndex = 5;
             GraphView.TabStop = false;
@@ -62,29 +65,28 @@ namespace Lab1
             // MatrixPanel
             // 
             MatrixPanel.AutoScroll = true;
-            MatrixPanel.Location = new System.Drawing.Point(8, 256);
-            MatrixPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            MatrixPanel.Location = new System.Drawing.Point(9, 341);
             MatrixPanel.Name = "MatrixPanel";
-            MatrixPanel.Size = new System.Drawing.Size(262, 194);
+            MatrixPanel.Size = new System.Drawing.Size(299, 259);
             MatrixPanel.TabIndex = 6;
             MatrixPanel.Paint += MatrixPanel_Paint_1;
             // 
             // InfoTextBox
             // 
             InfoTextBox.BackColor = System.Drawing.SystemColors.Control;
-            InfoTextBox.Location = new System.Drawing.Point(10, 27);
+            InfoTextBox.Location = new System.Drawing.Point(11, 36);
+            InfoTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             InfoTextBox.Name = "InfoTextBox";
-            InfoTextBox.Size = new System.Drawing.Size(261, 206);
+            InfoTextBox.Size = new System.Drawing.Size(298, 273);
             InfoTextBox.TabIndex = 7;
             InfoTextBox.Text = "";
             // 
             // GenerateGraphButton
             // 
             GenerateGraphButton.AutoSize = true;
-            GenerateGraphButton.Location = new System.Drawing.Point(10, 469);
-            GenerateGraphButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            GenerateGraphButton.Location = new System.Drawing.Point(11, 625);
             GenerateGraphButton.Name = "GenerateGraphButton";
-            GenerateGraphButton.Size = new System.Drawing.Size(242, 56);
+            GenerateGraphButton.Size = new System.Drawing.Size(277, 75);
             GenerateGraphButton.TabIndex = 8;
             GenerateGraphButton.Text = "Сгенерировать граф";
             GenerateGraphButton.UseVisualStyleBackColor = true;
@@ -93,40 +95,39 @@ namespace Lab1
             // drawVertexButton
             // 
             drawVertexButton.Image = (System.Drawing.Image)resources.GetObject("drawVertexButton.Image");
-            drawVertexButton.Location = new System.Drawing.Point(752, 6);
-            drawVertexButton.Margin = new System.Windows.Forms.Padding(2);
+            drawVertexButton.Location = new System.Drawing.Point(859, 8);
+            drawVertexButton.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             drawVertexButton.Name = "drawVertexButton";
-            drawVertexButton.Size = new System.Drawing.Size(58, 41);
+            drawVertexButton.Size = new System.Drawing.Size(66, 55);
             drawVertexButton.TabIndex = 0;
             drawVertexButton.Click += drawVertexButton_Click;
             // 
             // selectButton
             // 
             selectButton.Image = (System.Drawing.Image)resources.GetObject("selectButton.Image");
-            selectButton.Location = new System.Drawing.Point(702, 6);
-            selectButton.Margin = new System.Windows.Forms.Padding(2);
+            selectButton.Location = new System.Drawing.Point(802, 8);
+            selectButton.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             selectButton.Name = "selectButton";
-            selectButton.Size = new System.Drawing.Size(47, 41);
+            selectButton.Size = new System.Drawing.Size(54, 55);
             selectButton.TabIndex = 9;
             selectButton.Click += selectButton_Click;
             // 
             // deleteButton
             // 
             deleteButton.Image = (System.Drawing.Image)resources.GetObject("deleteButton.Image");
-            deleteButton.Location = new System.Drawing.Point(864, 8);
-            deleteButton.Margin = new System.Windows.Forms.Padding(2);
+            deleteButton.Location = new System.Drawing.Point(987, 11);
+            deleteButton.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             deleteButton.Name = "deleteButton";
-            deleteButton.Size = new System.Drawing.Size(47, 39);
+            deleteButton.Size = new System.Drawing.Size(54, 52);
             deleteButton.TabIndex = 10;
             deleteButton.Click += deleteButton_Click;
             // 
             // findPathButton
             // 
             findPathButton.AutoSize = true;
-            findPathButton.Location = new System.Drawing.Point(10, 544);
-            findPathButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            findPathButton.Location = new System.Drawing.Point(11, 725);
             findPathButton.Name = "findPathButton";
-            findPathButton.Size = new System.Drawing.Size(242, 58);
+            findPathButton.Size = new System.Drawing.Size(277, 77);
             findPathButton.TabIndex = 3;
             findPathButton.Text = "Найти \r\nнаикратчайший \r\nпуть";
             findPathButton.UseVisualStyleBackColor = true;
@@ -135,20 +136,20 @@ namespace Lab1
             // drawEdgeButton
             // 
             drawEdgeButton.Image = (System.Drawing.Image)resources.GetObject("drawEdgeButton.Image");
-            drawEdgeButton.Location = new System.Drawing.Point(814, 6);
-            drawEdgeButton.Margin = new System.Windows.Forms.Padding(2);
+            drawEdgeButton.Location = new System.Drawing.Point(930, 8);
+            drawEdgeButton.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             drawEdgeButton.Name = "drawEdgeButton";
-            drawEdgeButton.Size = new System.Drawing.Size(47, 41);
+            drawEdgeButton.Size = new System.Drawing.Size(54, 55);
             drawEdgeButton.TabIndex = 11;
             drawEdgeButton.Click += drawEdgeButton_Click;
             // 
             // deleteAllButton
             // 
             deleteAllButton.Image = (System.Drawing.Image)resources.GetObject("deleteAllButton.Image");
-            deleteAllButton.Location = new System.Drawing.Point(915, 6);
-            deleteAllButton.Margin = new System.Windows.Forms.Padding(2);
+            deleteAllButton.Location = new System.Drawing.Point(1046, 8);
+            deleteAllButton.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             deleteAllButton.Name = "deleteAllButton";
-            deleteAllButton.Size = new System.Drawing.Size(66, 41);
+            deleteAllButton.Size = new System.Drawing.Size(75, 55);
             deleteAllButton.TabIndex = 12;
             deleteAllButton.Click += deleteAllButton_Click;
             // 
@@ -156,20 +157,52 @@ namespace Lab1
             // 
             label1.AutoSize = true;
             label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            label1.Location = new System.Drawing.Point(22, 5);
+            label1.Location = new System.Drawing.Point(25, 7);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(105, 21);
+            label1.Size = new System.Drawing.Size(135, 28);
             label1.TabIndex = 13;
             label1.Text = "Окно вывода";
             // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new System.Drawing.Point(9, 818);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new System.Drawing.Size(113, 24);
+            checkBox1.TabIndex = 14;
+            checkBox1.Text = "Сравнивать";
+            checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
+            // 
+            // numericUpDown1
+            // 
+            numericUpDown1.Enabled = false;
+            numericUpDown1.Location = new System.Drawing.Point(156, 851);
+            numericUpDown1.Name = "numericUpDown1";
+            numericUpDown1.Size = new System.Drawing.Size(52, 27);
+            numericUpDown1.TabIndex = 16;
+            numericUpDown1.Value = new decimal(new int[] { 3, 0, 0, 0 });
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(9, 853);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(138, 20);
+            label2.TabIndex = 17;
+            label2.Text = "Кол-во сравнений";
+            // 
             // MainForm
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.Color.DarkSeaGreen;
-            ClientSize = new System.Drawing.Size(1413, 684);
+            ClientSize = new System.Drawing.Size(1615, 912);
+            Controls.Add(label2);
+            Controls.Add(numericUpDown1);
+            Controls.Add(checkBox1);
             Controls.Add(label1);
             Controls.Add(deleteAllButton);
             Controls.Add(drawEdgeButton);
@@ -181,11 +214,11 @@ namespace Lab1
             Controls.Add(MatrixPanel);
             Controls.Add(GraphView);
             Controls.Add(findPathButton);
-            Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "MainForm";
             Text = "Лабораторная работ 1. Алгоритм Дейкстры";
             Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)GraphView).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -202,5 +235,8 @@ namespace Lab1
         private System.Windows.Forms.Button drawEdgeButton;
         private System.Windows.Forms.Button deleteAllButton;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label label2;
     }
 }
