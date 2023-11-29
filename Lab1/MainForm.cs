@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Common.Draws;
+using Common.Draws.Components;
+using Common.Draws.enums;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using Common.Draws;
-using Common.Draws.Components;
-using Common.Draws.enums;
 
 namespace Lab1;
 
@@ -13,18 +13,12 @@ public partial class MainForm : Form
 {
     public readonly DrawService _drawService;
     private Edge _animatedEdge;
-
     private int _animationPosition;
-
     private Point _clickedLocation;
-
     private List<List<Control>> _controlMatrix;
     private FormWithEntryField _formWithEntryField;
-
     private List<List<Label>> _labelMatrix;
-
     private ContextMenuStrip _menu;
-
 
     public MainForm()
     {
@@ -102,7 +96,6 @@ public partial class MainForm : Form
 
             if (_drawService.FindEdge(v, listOfV[k + 1]) == null)
             {
-                //MessageBox.Show("Пути от " + from + " до " + to + " не существует.");
                 noWay = true;
             }
             else
@@ -129,7 +122,6 @@ public partial class MainForm : Form
             MessageBox.Show("Пути от " + from + " до " + to + " не существует.");
             return;
         }
-
 
         var richTextBoxInfoText = string.Empty;
         richTextBoxInfoText += "Метод Флойда: \n";
@@ -164,7 +156,6 @@ public partial class MainForm : Form
         DijkstraGraphFilling(path, from, to);
         _drawService.Redraw();
     }
-
 
     private void UpdateMatrix()
     {
@@ -268,19 +259,20 @@ public partial class MainForm : Form
 
         for (var i = 0; i < n; ++i)
         {
-            var label = new Label();
-            label.Parent = MatrixPanel;
-            label.Width = 50;
-            label.Height = 23;
-            label.Location = new Point(10 + 60 * i, 10 + 40 * n);
-            label.Text = "0";
+            var label = new Label
+            {
+                Parent = MatrixPanel,
+                Width = 50,
+                Height = 23,
+                Location = new Point(10 + 60 * i, 10 + 40 * n),
+                Text = "0"
+            };
             label.Show();
             list.Add(new Label());
         }
 
         _labelMatrix.Add(list);
     }
-
 
     private void EditVertexFormShow(MainForm mainForm, Vertex vertex, bool isNewVertex)
     {
@@ -292,7 +284,6 @@ public partial class MainForm : Form
     {
         var fromVertex = _drawService.FindVertex(from);
         var _connected = new Dictionary<Vertex, int>();
-        Vertex needVertex = null;
 
         for (var i = 0; i < _drawService.Matrix.GetLength(0); ++i)
         {
@@ -320,7 +311,6 @@ public partial class MainForm : Form
         label1.Text = "Выберите исходную вершину";
         label1.ForeColor = Color.Brown;
     }
-
 
     private void ShowVertexMenu(Point location)
     {
@@ -376,7 +366,6 @@ public partial class MainForm : Form
         }
     }
 
-
     private void GraphView_MouseDown(object sender, MouseEventArgs e)
     {
         _clickedLocation = e.Location;
@@ -411,7 +400,6 @@ public partial class MainForm : Form
                         _drawService.CreateVertex(e.Location);
                         _drawService.Redraw();
                     }
-
                     break;
                 }
 
@@ -466,8 +454,6 @@ public partial class MainForm : Form
                             });
                         }
                     }
-
-                    //_drawService.EditVertexFormShow(this,_drawService._selectedVertex, false);
                     break;
                 }
             case Modes.GetPath:
@@ -488,7 +474,7 @@ public partial class MainForm : Form
                         InfoTextBox.Text += $" в вершину {_drawService.TargetVertex.Index}\n";
                         var from = _drawService.SourceVertex.Index;
                         var to = _drawService.TargetVertex.Index;
-                        if(checkBox1.Checked == true)
+                        if (checkBox1.Checked == true)
                         {
                             var times = Replay();
                             InfoTextBox.Text += "\n Время метода Дейкстры: " + times.Item1.ToString();
@@ -499,6 +485,7 @@ public partial class MainForm : Form
                             ChooseAlgoDijkstra(_drawService._graphDrawService.Dijkstra(from, to), from, to);
                             FloidFilling(_drawService._graphDrawService.Floid(from, to), from, to);
                         }
+                        // Посмотреть описание св-ва G в _drawService._graphDrawService!!!
                         _drawService.SourceVertex = null;
                         _drawService.TargetVertex = null;
                         findPathButton.Enabled = true;
@@ -524,7 +511,7 @@ public partial class MainForm : Form
             for (int j = 0; j < vertexes.Count; j++)
                 for (int k = 0; k < vertexes.Count; k++)
                 {
-                    _drawService._graphDrawService.Dijkstra(j,k);
+                    _drawService._graphDrawService.Dijkstra(j, k);
                 }
         }
         stopwatch.Stop();
@@ -535,7 +522,7 @@ public partial class MainForm : Form
             for (int j = 0; j < vertexes.Count; j++)
                 for (int k = 0; k < vertexes.Count; k++)
                 {
-                    _drawService._graphDrawService.Floid(j,k);
+                    _drawService._graphDrawService.Floid(j, k);
                 }
         }
         stopwatch.Stop();
@@ -543,7 +530,6 @@ public partial class MainForm : Form
 
         return (dijkstraTime, floidTime);
     }
-
 
     private void GraphView_MouseMove(object sender, MouseEventArgs e)
     {
@@ -585,7 +571,6 @@ public partial class MainForm : Form
             });
         }
     }
-
 
     private void MainForm_Load(object sender, EventArgs e)
     {

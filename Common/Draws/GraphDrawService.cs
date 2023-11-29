@@ -1,6 +1,6 @@
+using Common.Algorithms;
 using System;
 using System.Collections.Generic;
-using Common.Algorithms;
 
 namespace Common.Draws;
 
@@ -149,29 +149,24 @@ public class GraphDrawService
     }
 
 
-    public (List<int>,int) Floid(int from, int to)
+    public (List<int>, int) Floid(int from, int to)
     {
         var n = MatrixWrap.Matrix.GetLength(0);
         var d = new int[n, n];
-        //var path = new int[n, n];
-        List<int> path = new List<int>();
-
-
+        List<int> path = new();
 
         for (var i = 0; i < n; i++)
             for (var j = 0; j < n; j++)
             {
-                //path[i, j] = j;
-
                 if (i == j) continue;
 
                 if (MatrixWrap.Matrix[i, j] == 0)
-                    d[i, j] = /*int.MaxValue;*/ 11;
+                    d[i, j] = 11;
                 else
                     d[i, j] = MatrixWrap.Matrix[i, j];
             }
 
-        List<List<int>> example = new List<List<int>>();
+        List<List<int>> example = new();
         for (int i = 0; i < n; i++)
         {
             example.Add(new List<int>());
@@ -186,14 +181,12 @@ public class GraphDrawService
                 for (var j = 0; j < n; j++)
                     if (d[i, k] + d[k, j] < d[i, j])
                     {
-                        //d[i, j] = d[i, k] + d[k, j];
-                        //path[i, j] = path[i, k];
                         d[i, j] = Math.Min(d[i, j], d[i, k] + d[k, j]);
                         example[i][j] = k; // запоминает промежуточные фазы(развивать этот момент)
                     }
         path.Add(to);
         int dist = d[from, to];
-        while(true)
+        while (true)
         {
             if (example[from][to] == -1)
             {

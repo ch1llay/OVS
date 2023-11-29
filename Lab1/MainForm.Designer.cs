@@ -215,7 +215,7 @@ namespace Lab1
             Controls.Add(GraphView);
             Controls.Add(findPathButton);
             Name = "MainForm";
-            Text = "Лабораторная работ 1. Алгоритм Дейкстры";
+            Text = "Лабораторные работы 1-2. Алгоритмы Дейкстры и Флойда. ";
             Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)GraphView).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
