@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using Common.Algorithms;
+using System;
+using System.Collections.Generic;
 
 namespace Common.Draws;
 
@@ -66,7 +67,7 @@ public class GraphDrawService
         {
             return;
         }
-        
+
         MatrixWrap.Matrix[vertex1, vertex2] = value;
         G[vertex1].Add(new Pair<int, int>(vertex2, value));
     }
@@ -79,8 +80,8 @@ public class GraphDrawService
         G.Add(new List<Pair<int, int>>());
 
         for (var i = 0; i < n; ++i)
-        for (var j = 0; j < m; ++j)
-            newMatrix[i, j] = MatrixWrap.Matrix[i, j];
+            for (var j = 0; j < m; ++j)
+                newMatrix[i, j] = MatrixWrap.Matrix[i, j];
 
         MatrixWrap.Matrix = newMatrix;
     }
@@ -148,36 +149,66 @@ public class GraphDrawService
     }
 
 
-    public int[,] Floid()
+    public (List<int>, int) Floid(int from, int to)
     {
         var n = MatrixWrap.Matrix.GetLength(0);
         var d = new int[n, n];
-        var path = new int[n, n];
-
+        List<int> path = new();
 
         for (var i = 0; i < n; i++)
-        for (var j = 0; j < n; j++)
+            for (var j = 0; j < n; j++)
+            {
+                if (i == j) continue;
+
+                if (MatrixWrap.Matrix[i, j] == 0)
+                    d[i, j] = 11;
+                else
+                    d[i, j] = MatrixWrap.Matrix[i, j];
+            }
+
+        List<List<int>> example = new();
+        for (int i = 0; i < n; i++)
         {
-            path[i, j] = j;
-
-            if (i == j) continue;
-
-            if (MatrixWrap.Matrix[i, j] == 0)
-                d[i, j] = int.MaxValue;
-            else
-                d[i, j] = MatrixWrap.Matrix[i, j];
+            example.Add(new List<int>());
+            for (int j = 0; j < n; j++)
+            {
+                example[i].Add(-1);
+            }
         }
 
         for (var k = 0; k < n; k++)
-        for (var i = 0; i < n; i++)
-        for (var j = 0; j < n; j++)
-            if (d[i, k] + d[k, j] < d[i, j])
+            for (var i = 0; i < n; i++)
+                for (var j = 0; j < n; j++)
+                    if (d[i, k] + d[k, j] < d[i, j])
+                    {
+                        d[i, j] = Math.Min(d[i, j], d[i, k] + d[k, j]);
+                        example[i][j] = k; // запоминает промежуточные фазы(развивать этот момент)
+                    }
+        path.Add(to);
+        int dist = d[from, to];
+        while (true)
+        {
+            if (example[from][to] == -1)
             {
-                d[i, j] = d[i, k] + d[k, j];
-                path[i, j] = path[i, k];
+                if (d[from, to] != 11)
+                {
+                    path.Add(from);
+                    break;
+                }
+                else
+                {
+                    path.Clear();
+                    break;
+                }
             }
+            else
+            {
+                path.Add(example[from][to]);
+                to = example[from][to];
+            }
+        }
+        path.Reverse();
 
-
-        return path;
+        return (path, dist);
     }
 }

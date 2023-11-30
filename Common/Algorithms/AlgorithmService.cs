@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing.Drawing2D;
 using Common.Draws;
+using System.Collections.Generic;
 
 namespace Common.Algorithms;
 
@@ -12,13 +10,13 @@ public class AlgorithmService
 
     public AlgorithmService(MatrixWrapClass matrix, List<List<Pair<int, int>>> g)
     {
-        _matrixWrap =  matrix;
+        _matrixWrap = matrix;
         _g = g;
     }
 
     public List<int> Dijkstra(int s, int finish)
     {
-        var n = _matrixWrap.Matrix.GetLength(0);   
+        var n = _matrixWrap.Matrix.GetLength(0);
         var path = new List<int>(n);
         //Массив с длинами особо кратчайших путей
         var dist = new List<int>(n);
@@ -27,15 +25,8 @@ public class AlgorithmService
         for (var i = 0; i < n; ++i)
         {
             path.Add(-1);
-            dist.Add(0);
+            dist.Add(int.MaxValue);
             was.Add(false);
-        }
-
-        for (var i = 0; i < n; ++i)
-        {
-            dist[i] = int.MaxValue;
-            was[i] = false;
-            path[i] = -1;
         }
 
         dist[s] = 0;
@@ -69,7 +60,7 @@ public class AlgorithmService
                 }
             }
         }
-        
+
         return path;
     }
 }

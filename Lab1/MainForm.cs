@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using Common.Draws;
+﻿using Common.Draws;
 using Common.Draws.Components;
 using Common.Draws.enums;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Lab1;
 
@@ -12,18 +13,12 @@ public partial class MainForm : Form
 {
     public readonly DrawService _drawService;
     private Edge _animatedEdge;
-
     private int _animationPosition;
-
     private Point _clickedLocation;
-
     private List<List<Control>> _controlMatrix;
     private FormWithEntryField _formWithEntryField;
-
     private List<List<Label>> _labelMatrix;
-
     private ContextMenuStrip _menu;
-
 
     public MainForm()
     {
@@ -92,6 +87,7 @@ public partial class MainForm : Form
         }
 
         var richTextBoxInfoText = string.Empty;
+        richTextBoxInfoText += "Метод Дейкстры: \n";
         richTextBoxInfoText += "Путь ";
 
         for (var k = 0; k < listOfV.Count - 1; ++k)
@@ -100,7 +96,6 @@ public partial class MainForm : Form
 
             if (_drawService.FindEdge(v, listOfV[k + 1]) == null)
             {
-                //MessageBox.Show("Пути от " + from + " до " + to + " не существует.");
                 noWay = true;
             }
             else
@@ -115,9 +110,31 @@ public partial class MainForm : Form
             richTextBoxInfoText += listOfV[listOfV.Count - 1];
             richTextBoxInfoText += "\n";
             richTextBoxInfoText += "Длина пути: ";
-            richTextBoxInfoText += sum;
+            richTextBoxInfoText += sum + "\n";
             InfoTextBox.Text += richTextBoxInfoText;
         }
+    }
+
+    public void FloidFilling((List<int>, int) values, int from, int to)
+    {
+        if (values.Item1.Count == 0)
+        {
+            MessageBox.Show("Пути от " + from + " до " + to + " не существует.");
+            return;
+        }
+
+        var richTextBoxInfoText = string.Empty;
+        richTextBoxInfoText += "Метод Флойда: \n";
+        richTextBoxInfoText += "Путь ";
+        for (int i = 0; i < values.Item1.Count; i++)
+        {
+            richTextBoxInfoText += values.Item1[i];
+            if (i == values.Item1.Count - 1) break;
+            richTextBoxInfoText += "->";
+        }
+        richTextBoxInfoText += "\n";
+        richTextBoxInfoText += "Длина пути: " + values.Item2.ToString();
+        InfoTextBox.Text += richTextBoxInfoText;
     }
 
     public void EditCompleteOk(Vertex vertex, Dictionary<Vertex, int> connected)
@@ -140,14 +157,13 @@ public partial class MainForm : Form
         _drawService.Redraw();
     }
 
-
     private void UpdateMatrix()
     {
         MatrixPanel.SuspendLayout();
         MatrixPanel.Hide();
         foreach (var controlMatrix in _controlMatrix)
-        foreach (var lb in controlMatrix)
-            lb.Dispose();
+            foreach (var lb in controlMatrix)
+                lb.Dispose();
 
         _controlMatrix.Clear();
         var n = _drawService.Matrix.GetLength(0);
@@ -243,19 +259,20 @@ public partial class MainForm : Form
 
         for (var i = 0; i < n; ++i)
         {
-            var label = new Label();
-            label.Parent = MatrixPanel;
-            label.Width = 50;
-            label.Height = 23;
-            label.Location = new Point(10 + 60 * i, 10 + 40 * n);
-            label.Text = "0";
+            var label = new Label
+            {
+                Parent = MatrixPanel,
+                Width = 50,
+                Height = 23,
+                Location = new Point(10 + 60 * i, 10 + 40 * n),
+                Text = "0"
+            };
             label.Show();
             list.Add(new Label());
         }
 
         _labelMatrix.Add(list);
     }
-
 
     private void EditVertexFormShow(MainForm mainForm, Vertex vertex, bool isNewVertex)
     {
@@ -267,7 +284,6 @@ public partial class MainForm : Form
     {
         var fromVertex = _drawService.FindVertex(from);
         var _connected = new Dictionary<Vertex, int>();
-        Vertex needVertex = null;
 
         for (var i = 0; i < _drawService.Matrix.GetLength(0); ++i)
         {
@@ -296,7 +312,6 @@ public partial class MainForm : Form
         label1.ForeColor = Color.Brown;
     }
 
-
     private void ShowVertexMenu(Point location)
     {
         if (_menu != null) _menu.Dispose();
@@ -323,18 +338,18 @@ public partial class MainForm : Form
         switch (e.ClickedItem.Text)
         {
             case "Изменить":
-            {
-                EditVertexFormShow(this, _drawService._selectedVertex, false);
+                {
+                    EditVertexFormShow(this, _drawService._selectedVertex, false);
 
-                break;
-            }
+                    break;
+                }
 
             case "Удалить":
-            {
-                _drawService.RemoveVertex(_drawService._selectedVertex);
+                {
+                    _drawService.RemoveVertex(_drawService._selectedVertex);
 
-                break;
-            }
+                    break;
+                }
         }
     }
 
@@ -343,14 +358,13 @@ public partial class MainForm : Form
         switch (e.ClickedItem.Text)
         {
             case "Добавить вершину":
-            {
-                EditVertexFormShow(this, _drawService.CreateVertex(_clickedLocation), true);
+                {
+                    EditVertexFormShow(this, _drawService.CreateVertex(_clickedLocation), true);
 
-                break;
-            }
+                    break;
+                }
         }
     }
-
 
     private void GraphView_MouseDown(object sender, MouseEventArgs e)
     {
@@ -359,91 +373,89 @@ public partial class MainForm : Form
         switch (_drawService._currentMode)
         {
             case Modes.Select:
-            {
-                var vertex = _drawService.ClickedVertex(e.Location);
-
-                if (vertex != null)
                 {
-                    _drawService._selectedVertex = vertex;
-                    _drawService._isMoving = true;
-                    _drawService._selectedVertex.Center = e.Location;
-                    _drawService.Redraw();
-                }
-                else
-                {
-                    _drawService._isMoving = false;
-                }
+                    var vertex = _drawService.ClickedVertex(e.Location);
 
-                break;
-            }
+                    if (vertex != null)
+                    {
+                        _drawService._selectedVertex = vertex;
+                        _drawService._isMoving = true;
+                        _drawService._selectedVertex.Center = e.Location;
+                        _drawService.Redraw();
+                    }
+                    else
+                    {
+                        _drawService._isMoving = false;
+                    }
+
+                    break;
+                }
 
             case Modes.AddVertex:
-            {
-                _drawService._selectedVertex = _drawService.ClickedVertex(e.Location);
-
-                if (_drawService._selectedVertex == null)
                 {
-                    _drawService.CreateVertex(e.Location);
-                    _drawService.Redraw();
-                }
+                    _drawService._selectedVertex = _drawService.ClickedVertex(e.Location);
 
-                break;
-            }
+                    if (_drawService._selectedVertex == null)
+                    {
+                        _drawService.CreateVertex(e.Location);
+                        _drawService.Redraw();
+                    }
+                    break;
+                }
 
             case Modes.Delete:
-            {
-                _drawService._selectedVertex = _drawService.ClickedVertex(e.Location);
-
-                if (_drawService._selectedVertex != null)
                 {
-                    _drawService.RemoveVertex(_drawService._selectedVertex);
-                    _drawService.Redraw();
-                }
+                    _drawService._selectedVertex = _drawService.ClickedVertex(e.Location);
 
-                break;
-            }
+                    if (_drawService._selectedVertex != null)
+                    {
+                        _drawService.RemoveVertex(_drawService._selectedVertex);
+                        _drawService.Redraw();
+                    }
+
+                    break;
+                }
 
             case Modes.AddEdge:
-            {
-                _drawService._selectedVertex = _drawService.ClickedVertex(e.Location);
+                {
+                    _drawService._selectedVertex = _drawService.ClickedVertex(e.Location);
 
-                if (drawEdgeButton.Enabled == false && _drawService.SourceVertex == null)
-                {
-                    _drawService.SourceVertex = _drawService._selectedVertex;
-                    InfoTextBox.Text = $"Из вершины {_drawService.SourceVertex.Index}";
-                    label1.Text = "Выберите целевую вершину";
-                    label1.ForeColor = Color.Brown;
-                }
-                else
-                {
-                    _drawService.TargetVertex = _drawService._selectedVertex;
-                    InfoTextBox.Text += $" в вершину {_drawService.TargetVertex.Index}";
-                    var from = _drawService.SourceVertex.Index;
-                    var to = _drawService.TargetVertex.Index;
-                    if (_formWithEntryField == null)
+                    if (drawEdgeButton.Enabled == false && _drawService.SourceVertex == null)
                     {
-                        _formWithEntryField = new FormWithEntryField(this);
-                        Enabled = false;
-                        _formWithEntryField.ShowWithAction(() =>
-                        {
-                            var n = _formWithEntryField?.GetInt() ?? 0;
-                            InfoTextBox.Text += $" значение {n}\n";
-                            WorkWithAddingEdge(from, n);
-                            _drawService.SourceVertex = null;
-                            _drawService.TargetVertex = null;
-                            _drawService._currentMode = Modes.Select;
-                            drawEdgeButton.Enabled = true;
-                            label1.Text = "(●'◡'●)";
-                            label1.ForeColor = Color.Black;
-                            Enabled = true;
-                            _formWithEntryField = null;
-                        });
+                        _drawService.SourceVertex = _drawService._selectedVertex;
+                        InfoTextBox.Text = $"Из вершины {_drawService.SourceVertex.Index}";
+                        label1.Text = "Выберите целевую вершину";
+                        label1.ForeColor = Color.Brown;
                     }
+                    else
+                    {
+                        _drawService.TargetVertex = _drawService._selectedVertex;
+                        if (_drawService.TargetVertex == null) return; // защита от миссклика(вроде помогает)
+                        InfoTextBox.Text += $" в вершину {_drawService.TargetVertex.Index}";
+                        var from = _drawService.SourceVertex.Index;
+                        var to = _drawService.TargetVertex.Index;
+                        if (_formWithEntryField == null)
+                        {
+                            _formWithEntryField = new FormWithEntryField(this);
+                            Enabled = false;
+                            _formWithEntryField.ShowWithAction(() =>
+                            {
+                                var n = _formWithEntryField?.GetInt() ?? 0;
+                                InfoTextBox.Text += $" значение {n}\n";
+                                WorkWithAddingEdge(from, n);
+                                _drawService.SourceVertex = null;
+                                _drawService.TargetVertex = null;
+                                _drawService._currentMode = Modes.Select;
+                                drawEdgeButton.Enabled = true;
+                                label1.Text = "(●'◡'●)";
+                                label1.ForeColor = Color.Black;
+                                Enabled = true;
+                                _formWithEntryField = null;
+                            });
+                        }
+                    }
+                    break;
                 }
-
-                //_drawService.EditVertexFormShow(this,_drawService._selectedVertex, false);
-                break;
-            }
             case Modes.GetPath:
                 _drawService._selectedVertex = _drawService.ClickedVertex(e.Location);
 
@@ -462,7 +474,18 @@ public partial class MainForm : Form
                         InfoTextBox.Text += $" в вершину {_drawService.TargetVertex.Index}\n";
                         var from = _drawService.SourceVertex.Index;
                         var to = _drawService.TargetVertex.Index;
-                        ChooseAlgoDijkstra(_drawService._graphDrawService.Dijkstra(from, to), from, to);
+                        if (checkBox1.Checked == true)
+                        {
+                            var times = Replay();
+                            InfoTextBox.Text += "\n Время метода Дейкстры: " + times.Item1.ToString();
+                            InfoTextBox.Text += "\n Время метода Флойда: " + times.Item2.ToString();
+                        }
+                        else
+                        {
+                            ChooseAlgoDijkstra(_drawService._graphDrawService.Dijkstra(from, to), from, to);
+                            FloidFilling(_drawService._graphDrawService.Floid(from, to), from, to);
+                        }
+                        // Посмотреть описание св-ва G в _drawService._graphDrawService!!!
                         _drawService.SourceVertex = null;
                         _drawService.TargetVertex = null;
                         findPathButton.Enabled = true;
@@ -474,6 +497,38 @@ public partial class MainForm : Form
 
                 break;
         }
+    }
+
+    private (long, long) Replay()
+    {
+        Stopwatch stopwatch = new Stopwatch();
+        var vertexes = _drawService.VertexList;
+        var countReplay = 0;
+        countReplay = (int)numericUpDown1.Value;
+        stopwatch.Start();
+        for (int i = 0; i < countReplay; i++)
+        {
+            for (int j = 0; j < vertexes.Count; j++)
+                for (int k = 0; k < vertexes.Count; k++)
+                {
+                    _drawService._graphDrawService.Dijkstra(j, k);
+                }
+        }
+        stopwatch.Stop();
+        var dijkstraTime = stopwatch.ElapsedMilliseconds;
+        stopwatch.Restart();
+        for (int i = 0; i < countReplay; i++)
+        {
+            for (int j = 0; j < vertexes.Count; j++)
+                for (int k = 0; k < vertexes.Count; k++)
+                {
+                    _drawService._graphDrawService.Floid(j, k);
+                }
+        }
+        stopwatch.Stop();
+        var floidTime = stopwatch.ElapsedMilliseconds;
+
+        return (dijkstraTime, floidTime);
     }
 
     private void GraphView_MouseMove(object sender, MouseEventArgs e)
@@ -516,7 +571,6 @@ public partial class MainForm : Form
             });
         }
     }
-
 
     private void MainForm_Load(object sender, EventArgs e)
     {
@@ -578,9 +632,16 @@ public partial class MainForm : Form
     {
     }
 
-
     private void deleteAllButton_Click(object sender, EventArgs e)
     {
         _drawService.DeleteAll();
+    }
+
+    private void checkBox1_CheckedChanged(object sender, EventArgs e)
+    {
+        if (checkBox1.Checked == true)
+            numericUpDown1.Enabled = true;
+        else
+            numericUpDown1.Enabled = false;
     }
 }
