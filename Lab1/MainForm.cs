@@ -3,22 +3,28 @@ using Common.Draws.Components;
 using Common.Draws.enums;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using LabOVS1;
+using System.Security.Cryptography;
 
 namespace Lab1;
 
 public partial class MainForm : Form
 {
     public readonly DrawService _drawService;
-    private Edge _animatedEdge;
-    private int _animationPosition;
     private Point _clickedLocation;
     private List<List<Control>> _controlMatrix;
     private FormWithEntryField _formWithEntryField;
     private List<List<Label>> _labelMatrix;
     private ContextMenuStrip _menu;
+    public DataSet _data;
+    private List<int> _path;
+    public DataGridView gridView;
 
     public MainForm()
     {
@@ -27,12 +33,24 @@ public partial class MainForm : Form
         FirstInit();
     }
 
-
+    public DataSet Data { get; }
     private void FirstInit()
     {
         _labelMatrix = new List<List<Label>>();
         _controlMatrix = new List<List<Control>>();
         _drawService._isMoving = false;
+        _data = new("Table");
+        _path = new();
+        gridView = new DataGridView();
+        gridView.BackgroundColor = System.Drawing.Color.Snow;
+        gridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        gridView.Dock = System.Windows.Forms.DockStyle.Fill;
+        gridView.Location = new System.Drawing.Point(0, 0);
+        gridView.Name = "gridView";
+        gridView.RowHeadersWidth = 51;
+        gridView.RowTemplate.Height = 29;
+        gridView.Size = new System.Drawing.Size(599, 236);
+        gridView.TabIndex = 0;
         GraphView.Image = new Bitmap(GraphView.Width, GraphView.Height);
     }
 
@@ -253,27 +271,6 @@ public partial class MainForm : Form
         _drawService.Redraw();
     }
 
-    private void AddNewLabelList(int n)
-    {
-        var list = new List<Label>();
-
-        for (var i = 0; i < n; ++i)
-        {
-            var label = new Label
-            {
-                Parent = MatrixPanel,
-                Width = 50,
-                Height = 23,
-                Location = new Point(10 + 60 * i, 10 + 40 * n),
-                Text = "0"
-            };
-            label.Show();
-            list.Add(new Label());
-        }
-
-        _labelMatrix.Add(list);
-    }
-
     private void EditVertexFormShow(MainForm mainForm, Vertex vertex, bool isNewVertex)
     {
         var newForm = new EditVertexForm(mainForm, vertex, isNewVertex);
@@ -306,31 +303,12 @@ public partial class MainForm : Form
 
     private void GetPath_Click(object sender, EventArgs e)
     {
-        _drawService._currentMode = Modes.GetPath;
+        if (_drawService._currentMode != Modes.Routing)
+            _drawService._currentMode = Modes.GetPath;
+
         findPathButton.Enabled = false;
         label1.Text = "Выберите исходную вершину";
         label1.ForeColor = Color.Brown;
-    }
-
-    private void ShowVertexMenu(Point location)
-    {
-        if (_menu != null) _menu.Dispose();
-
-        _menu = new ContextMenuStrip();
-        _menu.Items.Add("Изменить");
-        _menu.Items.Add("Удалить");
-        _menu.ItemClicked += VertexMenu_Click;
-        _menu.Show(GraphView, location);
-    }
-
-    private void ShowEmptyMenu(Point location)
-    {
-        if (_menu != null) _menu.Dispose();
-
-        _menu = new ContextMenuStrip();
-        _menu.Items.Add("Добавить вершину");
-        _menu.ItemClicked += EmptyMenu_Click;
-        _menu.Show(GraphView, location);
     }
 
     private void VertexMenu_Click(object sender, ToolStripItemClickedEventArgs e)
@@ -366,7 +344,7 @@ public partial class MainForm : Form
         }
     }
 
-    private void GraphView_MouseDown(object sender, MouseEventArgs e)
+    private async void GraphView_MouseDown(object sender, MouseEventArgs e)
     {
         _clickedLocation = e.Location;
 
@@ -494,8 +472,119 @@ public partial class MainForm : Form
                         label1.ForeColor = Color.Black;
                     }
                 }
-
                 break;
+            case Modes.Routing:
+                {
+                    _drawService._selectedVertex = _drawService.ClickedVertex(e.Location);
+
+                    if (_drawService._selectedVertex != null)
+                    {
+                        if (findPathButton.Enabled == false && _drawService.SourceVertex == null)
+                        {
+                            _drawService.SourceVertex = _drawService._selectedVertex;
+                            InfoTextBox.Text = $"Из вершины {_drawService.SourceVertex.Index}";
+                            label1.Text = "Выберите целевую вершину";
+                            label1.ForeColor = Color.Brown;
+                        }
+                        else
+                        {
+                            _drawService.TargetVertex = _drawService._selectedVertex;
+                            if (_drawService.TargetVertex == null) return; // защита от миссклика(вроде помогает)
+                            InfoTextBox.Text += $" в вершину {_drawService.TargetVertex.Index}";
+                            var from = _drawService.SourceVertex.Index;
+                            var to = _drawService.TargetVertex.Index;
+                            Package pckg = new(from, to, 1);
+                            if (_drawService._packages.Count != 0)
+                            {
+                                _drawService._packages.Clear();
+                                _drawService.Redraw();
+                            }
+                            var swap = (ref int from, ref int to) => { var tmp = from; from = to; to = tmp; };
+                            if (typeRouting.Text == "Случайная")
+                            {
+                                int protocol = 0;
+                                if (checkUDP.Checked)
+                                    protocol = 1;
+                                else
+                                    protocol = 3;
+                                for (int i = 0; i < protocol; i++)
+                                {
+                                    await Task.Run(() => _drawService.RandomRouting(pckg));
+                                    swap(ref from, ref to);
+                                    pckg = new(from, to, i);
+                                    _drawService._packages.Clear();
+                                    _drawService.Redraw();
+                                }
+                            }
+                            else if (typeRouting.Text == "Лавинная")
+                            {
+                                int protocol = 0;
+                                if (checkUDP.Checked)
+                                    protocol = 1;
+                                else
+                                    protocol = 3;
+                                for (int i = 0; i < protocol; i++)
+                                {
+                                    await Task.Run(() => _drawService.AvalangeRouting(pckg));
+                                    swap(ref from, ref to);
+                                    pckg = new(from, to, i);
+                                    _drawService._packages.Clear();
+                                    _drawService.Redraw();
+                                }
+                            }
+                            else if (typeRouting.Text == "По предыдущему опыту")
+                            {
+                                if (_path.Count == 0)
+                                {
+                                    var items = await Task.Run(() => _drawService.CreateRoutingTable(pckg));
+                                    for (int i = 0; i < _drawService._graphDrawService.G.Count; i++)
+                                    {
+                                        var duplicate = items.FindAll(val => val.Item1 == i);
+                                        if (duplicate.Count > 1)
+                                        {
+                                            duplicate.Sort(delegate ((int, int, int) it1, (int, int, int) it2)
+                                            {
+                                                if (it1.Item2 < it2.Item2) return -1;
+                                                else return 1;
+                                            });
+                                        }
+                                        for (int k = 1; k < duplicate.Count; k++)
+                                        {
+                                            items.Remove(duplicate[k]);
+                                        }
+                                    }
+                                    Thread.Sleep(100);
+                                    _drawService._packages.Clear();
+                                    _drawService.Redraw();
+                                    DataTable table = new("Table");
+                                    table.Columns.Add(new DataColumn("Вершина", typeof(int)));
+                                    table.Columns.Add(new DataColumn("Метрика", typeof(int)));
+                                    foreach (var j in items)
+                                    {
+                                        table.Rows.Add(new object[] { j.Item1, j.Item2 });
+                                    }
+                                    _data.Tables.Add(table);
+                                    _path = await Task.Run(() => _drawService.PreviousExperience(pckg, _path));
+                                }
+                                else
+                                {
+                                    await Task.Run(() => _drawService.PreviousExperience(pckg, _path));
+                                }
+                            }
+
+                            _drawService.SourceVertex = null;
+                            _drawService.TargetVertex = null;
+                            findPathButton.Enabled = true;
+                            routingButton.Enabled = true;
+                            _drawService._currentMode = Modes.Select;
+                            label1.Text = "(●'◡'●)";
+                            label1.ForeColor = Color.Black;
+                        }
+                    }
+
+
+                    break;
+                }
         }
     }
 
@@ -597,6 +686,7 @@ public partial class MainForm : Form
         drawEdgeButton.Enabled = true;
         deleteButton.Enabled = true;
         findPathButton.Enabled = true;
+        routingButton.Enabled = true;
         _drawService._currentMode = Modes.AddVertex;
     }
 
@@ -607,6 +697,7 @@ public partial class MainForm : Form
         drawEdgeButton.Enabled = true;
         deleteButton.Enabled = false;
         findPathButton.Enabled = true;
+        routingButton.Enabled = true;
         _drawService._currentMode = Modes.Delete;
     }
 
@@ -617,6 +708,7 @@ public partial class MainForm : Form
         drawEdgeButton.Enabled = false;
         deleteButton.Enabled = true;
         findPathButton.Enabled = true;
+        routingButton.Enabled = true;
         _drawService._currentMode = Modes.AddEdge;
     }
 
@@ -643,5 +735,40 @@ public partial class MainForm : Form
             numericUpDown1.Enabled = true;
         else
             numericUpDown1.Enabled = false;
+    }
+
+    private void routingButton_Click(object sender, EventArgs e)
+    {
+        selectButton.Enabled = true;
+        drawVertexButton.Enabled = true;
+        drawEdgeButton.Enabled = true;
+        deleteButton.Enabled = true;
+        findPathButton.Enabled = true;
+        routingButton.Enabled = false;
+        _drawService._currentMode = Modes.Routing;
+
+    }
+
+    private void Journal_Click(object sender, EventArgs e)
+    {
+        Form form = Application.OpenForms["Journal"];
+        Journal journal = new(this);
+        journal.Show();
+        if (form != null) form.Close();
+    }
+
+    private void checkUDP_CheckedChanged(object sender, EventArgs e)
+    {
+        if (checkUDP.Checked == true)
+            checkTCP.Checked = false;
+        else
+            checkTCP.Checked = true;
+    }
+    private void checkTCP_CheckedChanged(object sender, EventArgs e)
+    {
+        if (checkTCP.Checked == true)
+            checkUDP.Checked = false;
+        else
+            checkUDP.Checked = true;
     }
 }

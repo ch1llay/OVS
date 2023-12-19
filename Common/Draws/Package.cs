@@ -1,4 +1,6 @@
-﻿namespace Common.Draws
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace Common.Draws
 {
     public class Package
     {
@@ -23,6 +25,19 @@
             Count = count;
             Id = id;
             LastPosition = lastPosition;
+            WasCopy = true;
+        }
+
+        public Package(Package value)
+        {
+            From = value.From;
+            To = value.To;
+            Progress = value.Progress;
+            NextTarget = value.NextTarget;
+            Position = value.Position;
+            Count = value.Count;
+            Id = value.Id;
+            LastPosition = value.LastPosition;
             WasCopy = true;
         }
 

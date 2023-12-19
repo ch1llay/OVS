@@ -111,33 +111,16 @@ namespace Common.Draws
             catch { }
         }
 
-        private Rectangle GetRectForText()
-        {
-            var x = Math.Min(From.Center.X, To.Center.X);
-            var y = Math.Min(From.Center.Y, To.Center.Y);
-            var location = new Point(x, y);
-            var sizeX = Math.Max(Math.Max(From.Center.X, To.Center.X) - x + _offset, _offset);
-            var sizeY = Math.Max(Math.Max(From.Center.Y, To.Center.Y) - y + _offset, _offset);
-            var size = new Size(sizeX, sizeY);
-
-            return new Rectangle(location, size);
-        }
-
-        public void DrawAnimatedPackage(Graphics graphics, int i)
+        public void DrawAnimatedPackage(Graphics graphics, int i, Color color)
         {
             var from = new Point(From.Center.X, From.Center.Y);
             var to = new Point(To.Center.X, To.Center.Y);
             var lengthX = to.X - from.X;
             var lengthY = to.Y - from.Y;
             //graphics.DrawString("aaaa", Config.DefaultFont, TextBrush, from.X + lengthX/4, from.Y + lengthY/4);
-
-            graphics.DrawRectangle(CurrentPen, from.X + lengthX / 40 * i, from.Y + lengthY / 40 * i, 25, 25);
-            graphics.FillRectangle(_textBrush, from.X + lengthX / 40 * i, from.Y + lengthY / 40 * i, 25, 25);
-        }
-
-        private int Sign(int n)
-        {
-            return n >= 0 ? 1 : -1;
+            float procent = (float)i / 100;
+            graphics.DrawRectangle(new Pen(/*Color.DarkViolet*/color), from.X + lengthX * procent, from.Y + lengthY * procent, 25, 25);
+            graphics.FillRectangle(new SolidBrush(/*Color.DarkViolet*/color), from.X + lengthX * procent, from.Y + lengthY * procent, 25, 25);
         }
         public void Draw(Graphics graphics)
         {

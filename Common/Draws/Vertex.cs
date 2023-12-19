@@ -57,7 +57,7 @@ namespace Common.Draws
             //CurrentPen.Dispose();
             _currentPen = new Pen(color, 10);
         }
-        
+
 
         public void ResetColor()
         {

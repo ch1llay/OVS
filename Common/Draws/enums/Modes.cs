@@ -6,7 +6,8 @@
         AddVertex,
         Delete,
         AddEdge,
-        GetPath
+        GetPath,
+        Routing
         
     }
 }

@@ -38,6 +38,8 @@ public class GraphDrawService
 
     public MatrixWrapClass MatrixWrap;
 
+    public AlgorithmService AlgorithmService { get { return _algorithmService; } }
+
     public GraphDrawService()
     {
         MatrixWrap = new MatrixWrapClass();

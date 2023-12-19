@@ -44,6 +44,11 @@ namespace Lab1
             checkBox1 = new System.Windows.Forms.CheckBox();
             numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             label2 = new System.Windows.Forms.Label();
+            routingButton = new System.Windows.Forms.Button();
+            Journal = new System.Windows.Forms.Button();
+            typeRouting = new System.Windows.Forms.ComboBox();
+            checkUDP = new System.Windows.Forms.CheckBox();
+            checkTCP = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)GraphView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
@@ -53,7 +58,7 @@ namespace Lab1
             GraphView.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             GraphView.Location = new System.Drawing.Point(315, 68);
             GraphView.Name = "GraphView";
-            GraphView.Size = new System.Drawing.Size(1309, 815);
+            GraphView.Size = new System.Drawing.Size(1476, 815);
             GraphView.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             GraphView.TabIndex = 5;
             GraphView.TabStop = false;
@@ -192,6 +197,62 @@ namespace Lab1
             label2.TabIndex = 17;
             label2.Text = "Кол-во сравнений";
             // 
+            // routingButton
+            // 
+            routingButton.BackColor = System.Drawing.Color.Snow;
+            routingButton.Location = new System.Drawing.Point(315, 17);
+            routingButton.Name = "routingButton";
+            routingButton.Size = new System.Drawing.Size(151, 40);
+            routingButton.TabIndex = 18;
+            routingButton.Text = "Маршрутизация";
+            routingButton.UseVisualStyleBackColor = false;
+            routingButton.Click += routingButton_Click;
+            // 
+            // Journal
+            // 
+            Journal.BackColor = System.Drawing.Color.Snow;
+            Journal.Location = new System.Drawing.Point(1544, 21);
+            Journal.Name = "Journal";
+            Journal.Size = new System.Drawing.Size(94, 29);
+            Journal.TabIndex = 19;
+            Journal.Text = "Журнал";
+            Journal.UseVisualStyleBackColor = false;
+            Journal.Click += Journal_Click;
+            // 
+            // typeRouting
+            // 
+            typeRouting.FormattingEnabled = true;
+            typeRouting.Items.AddRange(new object[] { "Случайная", "Лавинная", "По предыдущему опыту" });
+            typeRouting.Location = new System.Drawing.Point(532, 24);
+            typeRouting.Name = "typeRouting";
+            typeRouting.Size = new System.Drawing.Size(193, 28);
+            typeRouting.TabIndex = 20;
+            typeRouting.Text = "(нет)";
+            // 
+            // checkUDP
+            // 
+            checkUDP.AutoSize = true;
+            checkUDP.Checked = true;
+            checkUDP.CheckState = System.Windows.Forms.CheckState.Checked;
+            checkUDP.Location = new System.Drawing.Point(1198, 26);
+            checkUDP.Name = "checkUDP";
+            checkUDP.Size = new System.Drawing.Size(60, 24);
+            checkUDP.TabIndex = 21;
+            checkUDP.Text = "UDP";
+            checkUDP.UseVisualStyleBackColor = true;
+            checkUDP.CheckedChanged += checkUDP_CheckedChanged;
+            // 
+            // checkTCP
+            // 
+            checkTCP.AutoSize = true;
+            checkTCP.Location = new System.Drawing.Point(1283, 26);
+            checkTCP.Name = "checkTCP";
+            checkTCP.Size = new System.Drawing.Size(55, 24);
+            checkTCP.TabIndex = 22;
+            checkTCP.Text = "TCP";
+            checkTCP.UseVisualStyleBackColor = true;
+            checkTCP.CheckedChanged += checkTCP_CheckedChanged;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -199,7 +260,12 @@ namespace Lab1
             AutoSize = true;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.Color.DarkSeaGreen;
-            ClientSize = new System.Drawing.Size(1615, 912);
+            ClientSize = new System.Drawing.Size(1791, 912);
+            Controls.Add(checkTCP);
+            Controls.Add(checkUDP);
+            Controls.Add(typeRouting);
+            Controls.Add(Journal);
+            Controls.Add(routingButton);
             Controls.Add(label2);
             Controls.Add(numericUpDown1);
             Controls.Add(checkBox1);
@@ -238,5 +304,10 @@ namespace Lab1
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button routingButton;
+        private System.Windows.Forms.Button Journal;
+        private System.Windows.Forms.ComboBox typeRouting;
+        private System.Windows.Forms.CheckBox checkUDP;
+        private System.Windows.Forms.CheckBox checkTCP;
     }
 }
