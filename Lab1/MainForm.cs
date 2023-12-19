@@ -277,6 +277,16 @@ public partial class MainForm : Form
         newForm.Show();
     }
 
+    private  void Timer(CancellationTokenSource tokenSource, TimeSpan time)
+    {
+        var currentTime = DateTime.Now;
+
+        while (DateTime.Now - currentTime < time) { }
+        
+        Console.WriteLine("Щас вырублю");
+        tokenSource.Cancel();
+    }
+
     private void WorkWithAddingEdge(int from, int n)
     {
         var fromVertex = _drawService.FindVertex(from);
@@ -512,8 +522,13 @@ public partial class MainForm : Form
                                 {
                                     var cts = new CancellationTokenSource();
                                     var crt = cts.Token;
-                                    var task = Task.Run(() => _drawService.RandomRouting(pckg), crt);
-                                    //TUT
+
+                                    if (checkTCP.Checked)
+                                    {
+                                        Task.Run(() => Timer(cts, TimeSpan.FromSeconds(5)));
+                                    }
+
+                                    await Task.Run(() => _drawService.RandomRouting(pckg, crt), crt);
                                     swap(ref from, ref to);
                                     pckg = new(from, to, i);
                                     _drawService._packages.Clear();
@@ -529,7 +544,15 @@ public partial class MainForm : Form
                                     protocol = 3;
                                 for (int i = 0; i < protocol; i++)
                                 {
-                                    await Task.Run(() => _drawService.AvalangeRouting(pckg));
+                                    var cts = new CancellationTokenSource();
+                                    var crt = cts.Token;
+
+                                    if (checkTCP.Checked)
+                                    {
+                                        Task.Run(() => Timer(cts, TimeSpan.FromSeconds(5)));
+                                    }
+                                    
+                                    await Task.Run(() => _drawService.AvalangeRouting(pckg), crt);
                                     swap(ref from, ref to);
                                     pckg = new(from, to, i);
                                     _drawService._packages.Clear();
@@ -574,7 +597,16 @@ public partial class MainForm : Form
                                         table.Rows.Add(new object[] { j.Item1, j.Item2 });
                                     }
                                     _data.Tables.Add(table);
-                                    _path = await Task.Run(() => _drawService.PreviousExperience(pckg, _path));
+                                    
+                                    var cts = new CancellationTokenSource();
+                                    var crt = cts.Token;
+
+                                    if (checkTCP.Checked)
+                                    {
+                                        Task.Run(() => Timer(cts, TimeSpan.FromSeconds(5)));
+                                    }
+                                    
+                                    _path = await Task.Run(() => _drawService.PreviousExperience(pckg, _path, crt));
                                 }
                                 else
                                 {

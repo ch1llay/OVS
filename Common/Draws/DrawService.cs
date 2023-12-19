@@ -409,10 +409,10 @@ public class DrawService
         inform.ShowDialog();
     }
 
-    public void RandomRouting(Package package)
+    public void RandomRouting(Package package, CancellationToken token)
     {
         _packages.Add(package);
-        while (package.Position != package.To)
+        while (package.Position != package.To && !token.IsCancellationRequested)
         {
             var from = package.Position;
             List<Pair<int, int>> listTo = new();
@@ -430,16 +430,24 @@ public class DrawService
             {
                 if (listTo.Count == 0)
                 {
-                    index = package.LastPosition; break;
+                    index = package.LastPosition; 
+                    break;
                 }
                 else if (listTo.Count == 1) break;
                 index = _rnd.Next(0, listTo.Count);
                 if (index != package.LastPosition)
                     break;
             }
-            AnimatePackage(from, listTo[index].To, package, Color.Crimson);
-            GetData();
+
+            if (listTo.Any())
+            {
+                AnimatePackage(from, listTo[index].To, package, Color.Crimson);
+            }
+
         }
+        
+        GetData();
+
         var image = new Bitmap(GraphView.Width, GraphView.Height);
         var graphics = Graphics.FromImage(image);
         Redraw(graphics, image, Color.Crimson);
@@ -575,7 +583,7 @@ public class DrawService
         return new List<(int, int, int)>(_toTable);
     }
 
-    public List<int>? PreviousExperience(Package package, List<int>path)
+    public List<int>? PreviousExperience(Package package, List<int>path, CancellationToken? cancellationToken = null)
     {
         if(_toTable.Count == 0)
         {
