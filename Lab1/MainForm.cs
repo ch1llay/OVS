@@ -344,6 +344,7 @@ public partial class MainForm : Form
         }
     }
 
+ 
     private async void GraphView_MouseDown(object sender, MouseEventArgs e)
     {
         _clickedLocation = e.Location;
@@ -509,7 +510,10 @@ public partial class MainForm : Form
                                     protocol = 3;
                                 for (int i = 0; i < protocol; i++)
                                 {
-                                    await Task.Run(() => _drawService.RandomRouting(pckg));
+                                    var cts = new CancellationTokenSource();
+                                    var crt = cts.Token;
+                                    var task = Task.Run(() => _drawService.RandomRouting(pckg), crt);
+                                    //TUT
                                     swap(ref from, ref to);
                                     pckg = new(from, to, i);
                                     _drawService._packages.Clear();
@@ -534,6 +538,12 @@ public partial class MainForm : Form
                             }
                             else if (typeRouting.Text == "По предыдущему опыту")
                             {
+                                int protocol = 0;
+                                if (checkUDP.Checked)
+                                    protocol = 1;
+                                else 
+                                    protocol = 3;
+
                                 if (_path.Count == 0)
                                 {
                                     var items = await Task.Run(() => _drawService.CreateRoutingTable(pckg));
